@@ -30,24 +30,35 @@ let UIController = (() => {
 // Global app controller
 let controller = ((budgetCtrl, UICtrl) => {
 
-    let DOM = UICtrl.getDOMStrings();
+    let setupEventListeners = () => {
+        let DOM = UICtrl.getDOMStrings();
+        let btn = document.querySelector(DOM.inputBtn);
+
+        btn.addEventListener('click', ctrlAddItem);
+
+        document.addEventListener('keypress', event => {
+            if(event.keyCode === 13 || event.which === 13) {
+                ctrlAddItem();
+            }
+        });
+    };
 
     let ctrlAddItem = () => {
         // 1. Get the field input data
         let input = UICtrl.getinput();
-        console.log(input)
         // 2. Add the item to the budget controller
         // 3. Add the item to the UI
         // 4. Calculate the budget
         // 5. Display the budget on the UI
-    }
+    };
 
-    let btn = document.querySelector(DOM.inputBtn);
-    btn.addEventListener('click', ctrlAddItem);
-
-    document.addEventListener('keypress', event => {
-        if(event.keyCode === 13 || event.which === 13) {
-            ctrlAddItem();
+    return {
+        init: () => {
+            console.log('Application has started.');
+            setupEventListeners();
         }
-    })
+    };
+
 })(budgetController, UIController);
+
+controller.init();
