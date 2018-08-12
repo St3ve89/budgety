@@ -1,10 +1,32 @@
 // budget controller
-let budgetController = (() => {
-   
+let budgetController = ( () => {
+   let Expense = (id, description, value) => {
+       this.id = id;
+       this.description = description;
+       this.value = value;
+   };
+
+   let Income = (id, description, value) => {
+       this.id = id;
+       this.description = description;
+       this.value = value;
+    };
+
+   let data = {
+       allitems: {
+           exp: [],
+           inc: []
+       },
+       totals: {
+           exp: 0,
+           inc: 0
+       }
+   };
+
 })();
 
 // UI controller
-let UIController = (() => {
+let UIController = ( () => {
     let DOMStrings = {
         inputType: '.add__type',
         inputDescription: '.add__description',
@@ -28,7 +50,7 @@ let UIController = (() => {
 
 
 // Global app controller
-let controller = ((budgetCtrl, UICtrl) => {
+let controller = ( (budgetCtrl, UICtrl) => {
 
     let setupEventListeners = () => {
         let DOM = UICtrl.getDOMStrings();
