@@ -14,14 +14,14 @@ let budgetController = ( () => {
 
     let calculateTotal = type => {
         let sum = 0;
-        data.allitems[type].forEach( cur => {
+        data.allItems[type].forEach( cur => {
             sum += cur.value;
         });
         data.totals[type] = sum;
     };
 
     let data = {
-        allitems: {
+        allItems: {
             exp: [],
             inc: []
         },
@@ -38,8 +38,8 @@ let budgetController = ( () => {
             let newItem, ID;
 
             //create new ID
-            if(data.allitems[type].length > 0){
-                ID = data.allitems[type][data.allitems[type].length - 1].id + 1;
+            if(data.allItems[type].length > 0){
+                ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
             } else {
                 ID = 0;
             }
@@ -52,11 +52,28 @@ let budgetController = ( () => {
             }
 
             // push it into our data structure
-            data.allitems[type].push(newItem);
+            data.allItems[type].push(newItem);
 
             // return the new element
             return newItem;
 
+        },
+
+        deleteItem: (type,id) => {
+            // id = 6
+            // data.allItems[type][id];
+            // ids = [1 2 4 6 8]
+            // index = 3
+
+            let ids = data.allItems[type].map( current => {
+                return current.id;
+            });
+
+            let index = ids.indexOf(id);
+
+            if(index !== -1) {
+                data.allItems[type].splice(index, 1);
+            }
         },
 
         calculateBudget: () => {
@@ -103,7 +120,8 @@ let UIController = ( () => {
         budgetLabel: '.budget__value',
         incomLabel: '.budget__income--value',
         expensesLabel: '.budget__expenses--value',
-        percentageLabel: '.budget__expenses--percentage'
+        percentageLabel: '.budget__expenses--percentage',
+        container: '.container'
     }
     return {
         getinput: () => {
@@ -120,11 +138,11 @@ let UIController = ( () => {
             if(type === 'inc'){
                 element = DOMStrings.incomeContainer;
 
-                html = '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+                html = '<div class="item clearfix" id="inc-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
             } else if(type === 'exp') {
                 element = DOMStrings.expensesContainer;
 
-                html = '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+                html = '<div class="item clearfix" id="exp-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
             }
 
             // replace the placeholder text with some data
@@ -182,6 +200,8 @@ let controller = ( (budgetCtrl, UICtrl) => {
                 ctrlAddItem();
             }
         });
+
+        document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
     };
 
     let updateBudget = () => {
@@ -214,6 +234,24 @@ let controller = ( (budgetCtrl, UICtrl) => {
     
             // 5.calculate and update budget
             updateBudget();
+        }
+    };
+
+    let ctrlDeleteItem = event => {
+        let itemId = event.target.parentNode.parentNode.parentNode.parentNode.id
+
+        if(itemId) {
+            // inc-1
+            let splitId = itemId.split('-');
+            let type = splitId[0];
+            let ID = parseInt(splitId[1]);
+            
+            // 1. delete the item from the data structure
+            budgetCtrl.deleteItem(type, ID);
+
+            // 2. delete the item from the ui
+
+            // 3. update and show the new budget
         }
     };
 
